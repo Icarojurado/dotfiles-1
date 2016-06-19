@@ -10,8 +10,8 @@ print_in_purple "\n  UI & UX\n\n"
 execute "defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true" \
    "Avoid creating '.DS_Store' files on network volumes"
 
-execute "defaults write com.apple.menuextra.battery ShowPercent -string 'NO'" \
-    "Hide battery percentage from the menu bar"
+execute "defaults write com.apple.menuextra.battery ShowPercent -string 'YES'" \
+    "Show battery percentage from the menu bar"
 
 execute "defaults write com.apple.CrashReporter UseUNC 1" \
     "Make crash reports appear as notifications"
@@ -22,8 +22,8 @@ execute "defaults write com.apple.LaunchServices LSQuarantine -bool false" \
 execute "defaults write com.apple.print.PrintingPrefs 'Quit When Finished' -bool true" \
     "Automatically quit the printer app once the print jobs are completed"
 
-execute "defaults write com.apple.screencapture disable-shadow -bool true" \
-    "Disable shadow in screenshots"
+execute "defaults write com.apple.screencapture disable-shadow -bool false" \
+    "Enable shadow in screenshots"
 
 execute "defaults write com.apple.screencapture location -string '$HOME/Desktop'" \
     "Save screenshots to the Desktop"
@@ -59,19 +59,19 @@ execute "defaults write com.apple.systempreferences NSQuitAlwaysKeepsWindows -bo
 execute "defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true" \
     "Expand print panel by default"
 
-execute "sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string 'Laptop' && \
-         sudo scutil --set ComputerName 'laptop' && \
-         sudo scutil --set HostName 'laptop' && \
-         sudo scutil --set LocalHostName 'laptop'" \
+execute "sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string 'gusbook' && \
+         sudo scutil --set ComputerName 'gusbook' && \
+         sudo scutil --set HostName 'gusbook' && \
+         sudo scutil --set LocalHostName 'gusbook'" \
     "Set computer name"
 
 execute "sudo systemsetup -setrestartfreeze on" \
     "Restart automatically if the computer freezes"
 
-execute "sudo defaults write /Library/Preferences/com.apple.Bluetooth.plist ControllerPowerState 0 && \
+execute "sudo defaults write /Library/Preferences/com.apple.Bluetooth.plist ControllerPowerState 1 && \
          sudo launchctl unload /System/Library/LaunchDaemons/com.apple.blued.plist && \
          sudo launchctl load /System/Library/LaunchDaemons/com.apple.blued.plist" \
-    "Turn Bluetooth off"
+    "Turn Bluetooth on"
 
 execute "for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.*; do
             sudo defaults write \"\${domain}\" dontAutoLoad -array \

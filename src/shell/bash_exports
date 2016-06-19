@@ -6,7 +6,7 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Make vim the default editor
-export EDITOR="vim"
+# export EDITOR="vim"
 
 # Ignore commands that start with spaces and duplicates
 export HISTCONTROL=ignoreboth
