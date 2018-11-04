@@ -10,7 +10,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")" \
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-brew_install "Chrome" "google-chrome" "caskroom/cask" "cask"
+# brew_install "Chrome" "google-chrome" "caskroom/cask" "cask"
 # brew_install "Chrome Canary" "google-chrome-canary" "caskroom/versions" "cask"
 # brew_install "Chromium" "chromium" "caskroom/cask" "cask"
 
@@ -21,7 +21,7 @@ brew_install "FFmpeg" "ffmpeg"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 brew_install "Firefox" "firefox" "caskroom/cask" "cask"
-brew_install "Firefox Developer" "firefoxdeveloperedition" "caskroom/versions" "cask"
+brew_install "Firefox Developer" "firefox-developer-edition" "caskroom/versions" "cask"
 # brew_install "Firefox Nightly" "firefoxnightly" "caskroom/versions" "cask"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -30,11 +30,12 @@ brew_install "Firefox Developer" "firefoxdeveloperedition" "caskroom/versions" "
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-brew_install "GIMP" "lisanet-gimp" "caskroom/cask" "cask"
+# brew_install "GIMP" "lisanet-gimp" "caskroom/cask" "cask"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-brew_install "Git" "git"
+# brew_install "Git" "git"
+brew_install "Git + Hub" "hub"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -54,7 +55,11 @@ brew_install "ImageOptim" "imageoptim" "caskroom/cask" "cask"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# brew_install "LICEcap" "licecap" "caskroom/cask" "cask"
+brew_install "LICEcap" "licecap" "caskroom/cask" "cask"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+brew_install "NVM" "nvm"``
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -77,7 +82,7 @@ brew_install "ShellCheck" "shellcheck"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-brew_install "Spectacle" "spectacle" "caskroom/cask" "cask"
+# brew_install "Spectacle" "spectacle" "caskroom/cask" "cask"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -85,7 +90,7 @@ brew_install "tmux" "tmux"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-brew_install "Transmission" "transmission" "caskroom/cask" "cask"
+# brew_install "Transmission" "transmission" "caskroom/cask" "cask"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -97,7 +102,11 @@ brew_install "Vim" "vim --override-system-vi"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-brew_install "VirtualBox" "virtualbox" "caskroom/cask" "cask"
+# brew_install "VirtualBox" "virtualbox" "caskroom/cask" "cask"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+brew_install "VS Code" "visual-studio-code" "cask"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -111,8 +120,10 @@ brew_install "Web Font Tools: WOFF2" "woff2" "bramstein/webfonttools"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-brew_install "WebKit" "webkit-nightly" "caskroom/versions" "cask"
+# brew_install "WebKit" "webkit-nightly" "caskroom/versions" "cask"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # brew_install "Zopfli" "zopfli"
+
+
