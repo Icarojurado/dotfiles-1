@@ -1,11 +1,8 @@
 # [Cătălin](https://github.com/alrra)’s dotfiles fork
 
-[![Build Status](https://travis-ci.org/alrra/dotfiles.svg?branch=master)](https://travis-ci.org/alrra/dotfiles)
-
 These are the base dotfiles that I start with when I set up a
 new environment. For more specific local needs I use the `.local`
 files described in the [`Local Settings`](#local-settings) section.
-
 
 ## Setup
 
@@ -19,6 +16,11 @@ understand [what it does](src/os/setup.sh). Seriously, **DON'T**!)
 |:---:|:---|
 | `macOS` | `bash -c "$(curl -LsS https://raw.github.com/gfelizola/dotfiles-1/master/src/os/setup.sh)"` |
 | `Ubuntu` | `bash -c "$(wget -qO - https://raw.github.com/gfelizola/dotfiles-1/master/src/os/setup.sh)"` |
+=======
+|:---|:---|
+| `macOS` | `bash -c "$(curl -LsS https://raw.github.com/alrra/dotfiles/master/src/os/setup.sh)"` |
+| `Ubuntu` | `bash -c "$(wget -qO - https://raw.github.com/alrra/dotfiles/master/src/os/setup.sh)"` |
+>>>>>>> upstream/master
 
 That's it! :sparkles:
 
@@ -39,17 +41,16 @@ The setup process will:
   [`Ubuntu`](src/os/preferences/ubuntu) preferences
 * Install [`vim` plugins](src/vim/vim/plugins)
 
-
 Setup process in action:
 
 <table>
     <tbody>
         <tr>
             <td>
-                <img src="https://cloud.githubusercontent.com/assets/1223565/11821505/91e437be-a372-11e5-9500-025c316fe22c.gif" alt="Setup process on macOS" width="100%">
+                <img src="https://cloud.githubusercontent.com/assets/1223565/19314446/cd89a592-90a2-11e6-948d-9d75247088ba.gif" alt="Setup process on Ubuntu" width="100%">
             </td>
             <td>
-                <img src="https://cloud.githubusercontent.com/assets/1223565/15118673/f41d9c8e-1615-11e6-9b25-5a4da543fef1.gif" alt="Setup process on Ubuntu" width="100%">
+                <img src="https://cloud.githubusercontent.com/assets/1223565/19048636/e23e347a-89af-11e6-853c-98616b75b6ae.gif" alt="Setup process on Ubuntu" width="100%">
             </td>
         </tr>
         <tr align="center">
@@ -58,7 +59,6 @@ Setup process in action:
         </td>
     </tbody>
 </table>
-
 
 ## Screenshots
 
@@ -121,7 +121,6 @@ Output for `git log`:
     </tbody>
 </table>
 
-
 ## Customize
 
 ### Local Settings
@@ -131,28 +130,26 @@ requirements by using the following files:
 
 #### `~/.bash.local`
 
-If the `~/.bash.local` file exists, it will be automatically sourced
-after all the other [`bash` related files](src/shell), thus, allowing
+The `~/.bash.local` file it will be automatically sourced after
+all the other [`bash` related files](src/shell), thus, allowing
 its content to add to or overwrite the existing aliases, settings,
 PATH, etc.
 
 Here is a very simple example of a `~/.bash.local` file:
 
 ```bash
-
 #!/bin/bash
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Set local aliases
+# Set local aliases.
 
 alias starwars="telnet towel.blinkenlights.nl"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Set PATH additions
+# Set PATH additions.
 
-PATH="/usr/local/bin:$PATH"
 PATH="$PATH:$HOME/projects/dotfiles/src/bin"
 
 export PATH
@@ -161,15 +158,24 @@ export PATH
 
 #### `~/.gitconfig.local`
 
-If the `~/.gitconfig.local` file exists, it will be automatically
-included after the configurations from `~/.gitconfig`, thus, allowing
-its content to overwrite or add to the existing `git` configurations.
+The `~/.gitconfig.local` file it will be automatically included
+after the configurations from `~/.gitconfig`, thus, allowing its
+content to overwrite or add to the existing `git` configurations.
 
-__Note:__ Use `~/.gitconfig.local` to store sensitive information such
-as the `git` user credentials, e.g.:
+__Note:__ Use `~/.gitconfig.local` to store sensitive information
+such as the `git` user credentials, e.g.:
 
 ```bash
+[commit]
+
+    # Sign commits using GPG.
+    # https://help.github.com/articles/signing-commits-using-gpg/
+
+    gpgsign = true
+
+
 [user]
+
     name = Cătălin Mariș
     email = alrra@example.com
     signingkey = XXXXXXXX
@@ -177,10 +183,9 @@ as the `git` user credentials, e.g.:
 
 #### `~/.vimrc.local`
 
-If the `~/.vimrc.local` file exists, it will be automatically sourced
-after `~/.vimrc`, thus, allowing its content to add or overwrite the
+The `~/.vimrc.local` file it will be automatically sourced after
+`~/.vimrc`, thus, allowing its content to add or overwrite the
 settings from `~/.vimrc`.
-
 
 ### Forks
 
@@ -188,13 +193,11 @@ If you decide to fork this project, don't forget to substitute my
 username with your own in the [`setup` snippets](#setup) and [in the
 `setup` script](https://github.com/alrra/dotfiles/blob/1503cf23ef23f6e31342b140bcd246625160b94f/src/os/setup.sh#L3).
 
-
 ## Update
 
 To update the dotfiles you can either run the [`setup`
 script](src/os/setup.sh) or, if you want to just update one particular
 part, run the appropriate [`os` script](src/os).
-
 
 ## Acknowledgements
 
@@ -202,7 +205,6 @@ Inspiration and code was taken from many sources, including:
 
 * [Mathias Bynens'](https://github.com/mathiasbynens)
   [dotfiles](https://github.com/mathiasbynens/dotfiles)
-
 
 ## License
 

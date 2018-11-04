@@ -5,13 +5,19 @@ cd "$(dirname "${BASH_SOURCE[0]}")" \
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-print_in_purple "\n  Transmission\n\n"
+print_in_purple "\n   Transmission\n\n"
 
 execute "defaults write org.m0k.transmission DeleteOriginalTorrent -bool true" \
     "Delete the original torrent files"
 
 execute "defaults write org.m0k.transmission DownloadAsk -bool false" \
     "Don’t prompt for confirmation before downloading"
+
+execute "defaults write org.m0k.transmission MagnetOpenAsk -bool false" \
+    "Don’t prompt for confirmation before downloading for magnet links"
+
+execute "defaults write org.m0k.transmission CheckRemoveDownloading -bool true" \
+    "Don’t prompt for confirmation before removing non-downloading active transfers"
 
 execute "defaults write org.m0k.transmission DownloadChoice -string 'Constant' && \
          defaults write org.m0k.transmission DownloadFolder -string '$HOME/Downloads'" \
@@ -26,5 +32,8 @@ execute "defaults write org.m0k.transmission WarningDonate -bool false" \
 
 execute "defaults write org.m0k.transmission WarningLegal -bool false" \
     "Hide the legal disclaimer"
+
+execute "defaults write org.m0k.transmission RandomPort -bool true" \
+    "Randomize port on launch"
 
 killall "Transmission" &> /dev/null

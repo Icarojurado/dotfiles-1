@@ -8,7 +8,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")" \
 main() {
 
     # ' At first you're like "shellcheck is awesome" but then you're
-    #   like "wtf are we still using bash" '
+    #   like "wtf are we still using bash" '.
     #
     #  (from: https://twitter.com/astarasikov/status/568825996532707330)
 
@@ -16,14 +16,11 @@ main() {
         ../test \
         ../src/os \
         ../src/shell \
-        ../src/os \
         -type f \
         ! -path '../src/shell/curlrc' \
         ! -path '../src/shell/inputrc' \
-        ! -path '../src/shell/screenrc' \
-        ! -path '../src/shell/tmux.conf' \
-        ! -path '../src/os/preferences/macos/set_terminal_theme.applescript' \
-        ! -path '../src/os/preferences/macos/Solarized Dark.terminal' \
+        ! -path '../src/os/preferences/macos/*.applescript' \
+        ! -path '../src/os/preferences/macos/*.terminal' \
         -exec shellcheck \
                 -e SC1090 \
                 -e SC1091 \

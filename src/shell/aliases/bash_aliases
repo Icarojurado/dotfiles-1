@@ -1,11 +1,5 @@
 #!/bin/bash
 
-declare DOTFILES_DIR_PATH="$(dirname "$(dirname "$(readlink "${BASH_SOURCE[0]}")")")"
-
-. "$DOTFILES_DIR_PATH/os/utils.sh"
-
-# ----------------------------------------------------------------------
-
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -24,17 +18,14 @@ alias la="ls -la"
 alias m="man"
 alias map="xargs -n1"
 alias n="npm"
+alias path='printf "%b\n" "${PATH//:/\\n}"'
 alias q="exit"
 alias rm="rm -rf --"
+alias t="tmux"
+alias y="yarn"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Load OS specific aliases
+# Load OS specific aliases.
 
-. "$DOTFILES_DIR_PATH/shell/$(get_os)/bash_aliases"
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Cleanup
-
-unset DOTFILES_DIR_PATH
+. "aliases/$OS/bash_aliases"

@@ -2,34 +2,7 @@
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Simple Calculator
-
-? () {
-
-    local result=""
-
-    #                       ┌─ default (when --mathlib is used) is 20
-    result="$( printf "scale=10;%s\n" "$*" | bc --mathlib | tr -d "\\\n" )"
-    #                         remove the tailing "\" and "\n" ─┘
-    #                         (large numbers are printed on multiple lines)
-
-    if [[ "$result" == *.* ]]; then
-        # Improve the output for decimal numbers
-        printf "%s" "$result" |
-        sed -e "s/^\./0./"          # add "0" for cases like ".5"` \
-            -e "s/^-\./-0./"        # add "0" for cases like "-.5"`\
-            -e "s/0*$//;s/\.$//"    # remove tailing zeros
-    else
-        printf "%s" "$result"
-    fi
-
-    printf "\n"
-
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Create data URI from a file
+# Create data URI from a file.
 
 datauri() {
 
@@ -54,7 +27,7 @@ datauri() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Delete files that match a certain pattern from the current directory
+# Delete files that match a certain pattern from the current directory.
 
 delete-files() {
     local q="${1:-*.DS_Store}"
@@ -63,7 +36,7 @@ delete-files() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Get gzip information (gzipped file size + reduction size)
+# Get gzip information (gzipped file size + reduction size).
 
 gz() {
 
@@ -82,7 +55,7 @@ gz() {
             printf " ─────────────────────────────\n"
             printf " reduction:       %12s [%s%%]\n\n" \
                         "$( hrfs $((originalSize - gzippedSize)) )" \
-                        "$( printf "%s %s" "$originalSize $gzippedSize" | \
+                        "$( printf "%s" "$originalSize $gzippedSize" | \
                             awk '{ printf "%.1f", 100 - $2 * 100 / $1 }' | \
                             sed -e "s/0*$//;s/\.$//" )"
                             #              └─ remove tailing zeros
@@ -99,7 +72,7 @@ gz() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Human readable file size
-# (because `du -h` doesn't cut it for me)
+# (because `du -h` doesn't cut it for me).
 
 hrfs() {
 
@@ -133,7 +106,7 @@ hrfs() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Create new directories and enter the first one
+# Create new directories and enter the first one.
 
 mkd() {
     if [ -n "$*" ]; then
@@ -149,7 +122,46 @@ mkd() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Search history
+# Process phone images.
+
+ppi() {
+    command -v "convert" &> /dev/null \
+        || exit 0;
+
+    declare query="${1:-*.jpg}"
+    declare geometry="${2:-50%}"
+
+    for i in "$query"; do
+
+        if [[ "$(echo ${i##*.} | tr '[:upper:]' '[:lower:]')" != "png" ]]; then
+            imgName="${i%.*}.png"
+        else
+            imgName="_${i%.*}.png"
+        fi
+
+        convert "$i" \
+            -colorspace RGB \
+            +sigmoidal-contrast 11.6933 \
+            -define filter:filter=Sinc \
+            -define filter:window=Jinc \
+            -define filter:lobes=3 \
+            -sigmoidal-contrast 11.6933 \
+            -colorspace sRGB \
+            -background transparent \
+            -gravity center \
+            -resize "$geometry" \
+            +append \
+            "$imgName" \
+        && printf "* %s (%s)\n" \
+            "$imgName" \
+            "$geometry"
+
+    done
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Search history.
 
 qh() {
     #           ┌─ enable colors for pipe
@@ -162,10 +174,10 @@ qh() {
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# Search for text within the current directory
+# Search for text within the current directory.
 
 qt() {
-    grep -ir --color=always "$*" . | less -RX
+    grep -ir --color=always "$*" --exclude-dir=".git" --exclude-dir="node_modules" . | less -RX
     #     │└─ search all files under each directory, recursively
     #     └─ ignore case
 }

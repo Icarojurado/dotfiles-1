@@ -5,13 +5,17 @@ cd "$(dirname "${BASH_SOURCE[0]}")" \
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-print_in_purple "\n  UI & UX\n\n"
+print_in_purple "\n   UI & UX\n\n"
 
-execute "defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true" \
-   "Avoid creating '.DS_Store' files on network volumes"
+execute "defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true && \
+         defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true" \
+   "Avoid creating '.DS_Store' files on network or USB volumes"
 
 execute "defaults write com.apple.menuextra.battery ShowPercent -string 'YES'" \
     "Show battery percentage from the menu bar"
+
+execute "sudo defaults write /Library/Preferences/com.apple.loginwindow showInputMenu -bool true" \
+    "Show language menu in the top right corner of the boot screen"
 
 execute "defaults write com.apple.CrashReporter UseUNC 1" \
     "Make crash reports appear as notifications"
@@ -35,35 +39,44 @@ execute "defaults write com.apple.screensaver askForPassword -int 1 && \
          defaults write com.apple.screensaver askForPasswordDelay -int 0"\
     "Require password immediately after into sleep or screen saver mode"
 
-execute "defaults write NSGlobalDomain AppleFontSmoothing -int 2" \
+execute "defaults write -g AppleFontSmoothing -int 2" \
     "Enable subpixel font rendering on non-Apple LCDs"
 
-execute "defaults write NSGlobalDomain AppleShowScrollBars -string 'Always'" \
-    "Always show scrollbars"
+# execute "defaults write -g AppleShowScrollBars -string 'Always'" \
+    # "Always show scrollbars"
 
-execute "defaults write NSGlobalDomain NSDisableAutomaticTermination -bool true" \
+execute "defaults write -g NSAutomaticWindowAnimationsEnabled -bool false" \
+    "Disable window opening and closing animations."
+
+execute "defaults write -g NSDisableAutomaticTermination -bool true" \
     "Disable automatic termination of inactive apps"
 
-execute "defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true" \
+execute "defaults write -g NSNavPanelExpandedStateForSaveMode -bool true" \
     "Expand save panel by default"
 
-execute "defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2" \
+execute "defaults write -g NSTableViewDefaultSizeMode -int 2" \
     "Set sidebar icon size to medium"
 
-execute "defaults write NSGlobalDomain NSUseAnimatedFocusRing -bool false" \
-    "Disable the over-the-top focus ring animation"
+# execute "defaults write -g NSUseAnimatedFocusRing -bool false" \
+#     "Disable the over-the-top focus ring animation"
+
+execute "defaults write -g NSWindowResizeTime -float 0.001" \
+    "Accelerated playback when adjusting the window size."
+
+execute "defaults write -g PMPrintingExpandedStateForPrint -bool true" \
+    "Expand print panel by default"
+
+execute "defaults write -g QLPanelAnimationDuration -float 0" \
+    "Disable opening a Quick Look window animations."
 
 execute "defaults write com.apple.systempreferences NSQuitAlwaysKeepsWindows -bool false" \
     "Disable resume system-wide"
 
-execute "defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true" \
-    "Expand print panel by default"
-
-execute "sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string 'gusbook' && \
-         sudo scutil --set ComputerName 'gusbook' && \
-         sudo scutil --set HostName 'gusbook' && \
-         sudo scutil --set LocalHostName 'gusbook'" \
-    "Set computer name"
+# execute "sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string 'Laptop' && \
+#          sudo scutil --set ComputerName 'laptop' && \
+#          sudo scutil --set HostName 'laptop' && \
+#          sudo scutil --set LocalHostName 'laptop'" \
+#     "Set computer name"
 
 execute "sudo systemsetup -setrestartfreeze on" \
     "Restart automatically if the computer freezes"

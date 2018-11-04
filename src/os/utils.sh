@@ -19,11 +19,15 @@ ask_for_confirmation() {
 
 ask_for_sudo() {
 
-    # Ask for the administrator password upfront
+    # Ask for the administrator password upfront.
+
     sudo -v &> /dev/null
 
-    # Update existing `sudo` time stamp until this script has finished
+    # Update existing `sudo` time stamp
+    # until this script has finished.
+    #
     # https://gist.github.com/cowboy/3118588
+
     while true; do
         sudo -n true
         sleep 60
@@ -36,25 +40,71 @@ cmd_exists() {
     command -v "$1" &> /dev/null
 }
 
+kill_all_subprocesses() {
+
+    local i=""
+
+    for i in $(jobs -p); do
+        kill "$i"
+        wait "$i" &> /dev/null
+    done
+
+}
+
 execute() {
 
-    local tmpFile="$(mktemp /tmp/XXXXX)"
+    local -r CMDS="$1"
+    local -r MSG="${2:-$1}"
+    local -r TMP_FILE="$(mktemp /tmp/XXXXX)"
+
     local exitCode=0
+    local cmdsPID=""
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    eval "$1" \
-        &> /dev/null \
-        2> "$tmpFile"
+    # If the current process is ended,
+    # also end all its subprocesses.
 
-    print_result $? "${2:-$1}"
+    set_trap "EXIT" "kill_all_subprocesses"
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Execute commands in background
+
+    eval "$CMDS" \
+        &> /dev/null \
+        2> "$TMP_FILE" &
+
+    cmdsPID=$!
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Show a spinner if the commands
+    # require more time to complete.
+
+    show_spinner "$cmdsPID" "$CMDS" "$MSG"
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Wait for the commands to no longer be executing
+    # in the background, and then get their exit code.
+
+    wait "$cmdsPID" &> /dev/null
     exitCode=$?
 
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Print output based on what happened.
+
+    print_result $exitCode "$MSG"
+
     if [ $exitCode -ne 0 ]; then
-        print_error_stream "↳ ERROR:" < "$tmpFile"
+        print_error_stream < "$TMP_FILE"
     fi
 
-    rm -rf "$tmpFile"
+    rm -rf "$TMP_FILE"
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     return $exitCode
 
@@ -104,10 +154,6 @@ get_os_version() {
 
 }
 
-get_os_arch() {
-    printf "%s" "$(getconf LONG_BIT)"
-}
-
 is_git_repository() {
     git rev-parse &> /dev/null
 }
@@ -118,20 +164,23 @@ is_supported_version() {
     declare -a v2=(${2//./ })
     local i=""
 
-    # Fill empty positions in v1 with zeros
+    # Fill empty positions in v1 with zeros.
     for (( i=${#v1[@]}; i<${#v2[@]}; i++ )); do
         v1[i]=0
     done
 
+
     for (( i=0; i<${#v1[@]}; i++ )); do
 
-        # Fill empty positions in v2 with zeros
+        # Fill empty positions in v2 with zeros.
         if [[ -z ${v2[i]} ]]; then
             v2[i]=0
         fi
 
         if (( 10#${v1[i]} < 10#${v2[i]} )); then
             return 1
+        elif (( 10#${v1[i]} > 10#${v2[i]} )); then
+            return 0
         fi
 
     done
@@ -153,37 +202,40 @@ mkd() {
 }
 
 print_error() {
-    print_in_red "  [✖] $1 $2\n"
+    print_in_red "   [✖] $1 $2\n"
 }
 
 print_error_stream() {
     while read -r line; do
-        print_error "$1 $line"
+        print_error "↳ ERROR: $line"
     done
 }
 
+print_in_color() {
+    printf "%b" \
+        "$(tput setaf "$2" 2> /dev/null)" \
+        "$1" \
+        "$(tput sgr0 2> /dev/null)"
+}
+
 print_in_green() {
-    printf "\e[0;32m%b\e[0m" "$1"
+    print_in_color "$1" 2
 }
 
 print_in_purple() {
-    printf "\e[0;35m%b\e[0m" "$1"
+    print_in_color "$1" 5
 }
 
 print_in_red() {
-    printf "\e[0;31m%b\e[0m" "$1"
+    print_in_color "$1" 1
 }
 
 print_in_yellow() {
-    printf "\e[0;33m%b\e[0m" "$1"
-}
-
-print_info() {
-    print_in_purple "\n $1\n\n"
+    print_in_color "$1" 3
 }
 
 print_question() {
-    print_in_yellow "  [?] $1"
+    print_in_yellow "   [?] $1"
 }
 
 print_result() {
@@ -199,11 +251,18 @@ print_result() {
 }
 
 print_success() {
-    print_in_green "  [✔] $1\n"
+    print_in_green "   [✔] $1\n"
 }
 
 print_warning() {
-    print_in_yellow "  [!] $1\n"
+    print_in_yellow "   [!] $1\n"
+}
+
+set_trap() {
+
+    trap -p "$1" | grep "$2" &> /dev/null \
+        || trap '$2' "$1"
+
 }
 
 skip_questions() {
@@ -217,5 +276,76 @@ skip_questions() {
     done
 
     return 1
+
+}
+
+show_spinner() {
+
+    local -r FRAMES='/-\|'
+
+    # shellcheck disable=SC2034
+    local -r NUMBER_OR_FRAMES=${#FRAMES}
+
+    local -r CMDS="$2"
+    local -r MSG="$3"
+    local -r PID="$1"
+
+    local i=0
+    local frameText=""
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Note: In order for the Travis CI site to display
+    # things correctly, it needs special treatment, hence,
+    # the "is Travis CI?" checks.
+
+    if [ "$TRAVIS" != "true" ]; then
+
+        # Provide more space so that the text hopefully
+        # doesn't reach the bottom line of the terminal window.
+        #
+        # This is a workaround for escape sequences not tracking
+        # the buffer position (accounting for scrolling).
+        #
+        # See also: https://unix.stackexchange.com/a/278888
+
+        printf "\n\n\n"
+        tput cuu 3
+
+        tput sc
+
+    fi
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Display spinner while the commands are being executed.
+
+    while kill -0 "$PID" &>/dev/null; do
+
+        frameText="   [${FRAMES:i++%NUMBER_OR_FRAMES:1}] $MSG"
+
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        # Print frame text.
+
+        if [ "$TRAVIS" != "true" ]; then
+            printf "%s\n" "$frameText"
+        else
+            printf "%s" "$frameText"
+        fi
+
+        sleep 0.2
+
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        # Clear frame text.
+
+        if [ "$TRAVIS" != "true" ]; then
+            tput rc
+        else
+            printf "\r"
+        fi
+
+    done
 
 }

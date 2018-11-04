@@ -3,15 +3,18 @@
     a   = commit --amend
     br  = branch
     c   = commit
-    ca  = !git add -A && git commit                 # Commit all changes
+    ca  = !git add -A && git commit             # Commit all changes.
     co  = checkout
     cp  = cherry-pick
     d   = diff
     dc  = diff --cached
-    g   = log --graph --pretty=custom               # Show custom graph
-    l   = log --pretty=custom                       # Show custom log
-    lc  = shortlog --summary --numbered             # List contributors
-    rlc = reset --hard HEAD~1                       # Remove last commit
+    f   = fetch
+    g   = log --graph --pretty=custom           # Show custom graph.
+    git = !exec git                             # Allow `$ git git git...`
+    l   = log --pretty=custom                   # Show custom log.
+    lc  = shortlog --email --numbered --summary # List contributors.
+    p   = push
+    r   = rebase
     s   = status
     ulc = reset --soft HEAD~1                       # Undo last commit
     pub = "!git push -u origin $(git branch-name)"  # push current branch
@@ -21,10 +24,11 @@
     # Get current branch name
 
     branch-name = "!git rev-parse --abbrev-ref HEAD"
+    w   = instaweb --httpd=webrick              # Start web-based visualizer.
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    # Find commits by source code
+    # Find commits by source code.
 
     cc = "!f() { \
         git log --pretty=custom --decorate --date=short -S\"$1\"; \
@@ -32,7 +36,7 @@
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    # Find commits by commit message
+    # Find commits by commit message.
 
     cm = "!f() { \
         git log --pretty=custom --decorate --date=short --grep=\"$1\"; \
@@ -40,7 +44,7 @@
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    # Credit an author on the latest commit
+    # Credit an author on the latest commit.
 
     credit = "!f() { \
         if [ -n \"$1\" ] && [ -n \"$2\" ]; then \
@@ -50,7 +54,7 @@
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    # List remote branches
+    # List remote branches.
 
     lrb = "!f() { \
         remote="${1:-origin}"; \
@@ -60,7 +64,7 @@
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     # Merge GitHub pull request on top of the current branch or,
-    # if a branch name is specified, on top of the specified branch
+    # if a branch name is specified, on top of the specified branch.
 
     mpr = "!f() { \
         declare currentBranch=\"$(git symbolic-ref --short HEAD)\"; \
@@ -79,11 +83,29 @@
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     # Remove the tag with the specified tag name if
-    # exists and tag the latest commit with that name
+    # exists and tag the latest commit with that name.
 
     retag = "!f() { \
         git tag -d "$1" &> /dev/null; \
         git tag $1; \
+    }; f"
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Remove last commits (by default it removes the last commit).
+
+    rlc = "!f() { \
+        declare n=\"${1:-1}\"; \
+        git reset --hard \"HEAD~$n\"; \
+    }; f"
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    # Undo last commits (by default it undoes the last commit).
+
+    ulc = "!f() { \
+        declare n=\"${1:-1}\"; \
+        git reset --soft \"HEAD~$n\"; \
     }; f"
 
 
@@ -97,8 +119,12 @@
 
     frag = magenta
     meta = yellow
+
     new = green
     old = red
+
+    newMoved = cyan
+    oldMoved = blue
 
 [color "status"]
 
@@ -114,16 +140,18 @@
 	editor = code --wait
     excludesfile = ~/.gitignore
 
-[commit]
+[diff]
 
-    # Sign commits using GPG
-    # https://help.github.com/articles/signing-commits-using-gpg/
+    # Show blocks of moved text of at least 20
+    # alphanumeric characters differently than adds/deletes.
+    #
+    # https://git-scm.com/docs/git-diff#git-diff-zebra
 
-    # gpgsign = true
+    colorMoved = zebra
 
 [diff "bin"]
 
-    # Use `hexdump` to diff binary files
+    # Use `hexdump` to diff binary files.
 
     textconv = hexdump -v -C
 
@@ -140,13 +168,13 @@
 [push]
 
     # Make `git push` automatically push relevant
-    # annotated tags when pushing branches out
+    # annotated tags when pushing branches out.
 
     followTags = true
 
 [user]
 
-    # Don't guess the user's identity
+    # Don't guess the user's identity.
     # https://github.com/git/git/blob/90f7b16b3adc78d4bbabbd426fb69aa78c714f71/Documentation/config.txt#L2847-L2855
 
     useConfigOnly = true
@@ -155,11 +183,11 @@
 
 [include]
 
-    # Load local configs
+    # Load local configs.
     # https://git-scm.com/docs/git-config#_includes
     #
-    # Note: The following needs to remain at the end of this file in
-    #       order to allow any of the above configs to be overwritten
-    #       by the local ones
+    # [!] The following needs to remain at the end of this file in
+    #     order to allow any of the above configs to be overwritten
+    #     by the local ones
 
     path = ~/.gitconfig.local

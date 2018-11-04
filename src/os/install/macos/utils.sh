@@ -9,39 +9,37 @@ brew_cleanup() {
 
     # By default Homebrew does not uninstall older versions
     # of formulas so, in order to remove them, `brew cleanup`
-    # needs to be used:
+    # needs to be used.
     #
     # https://github.com/Homebrew/brew/blob/496fff643f352b0943095e2b96dbc5e0f565db61/share/doc/homebrew/FAQ.md#how-do-i-uninstall-old-versions-of-a-formula
 
     execute \
         "brew cleanup" \
-        "brew (cleanup)"
-
-    execute \
-        "brew cask cleanup" \
-        "brew cask (cask cleanup)"
+        "Homebrew (cleanup)"
 
 }
 
 brew_install() {
 
     declare -r CMD="$4"
+    declare -r CMD_ARGUMENTS="$5"
     declare -r FORMULA="$2"
     declare -r FORMULA_READABLE_NAME="$1"
     declare -r TAP_VALUE="$3"
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    # Check if `Homebrew` is installed
+    # Check if `Homebrew` is installed.
 
     if ! cmd_exists "brew"; then
-        print_error "$FORMULA_READABLE_NAME ('brew' is not installed)"
+        print_error "$FORMULA_READABLE_NAME ('Homebrew' is not installed)"
         return 1
     fi
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    # If `brew tap` needs to be executed, check if it executed correctly
+    # If `brew tap` needs to be executed,
+    # check if it executed correctly.
 
     if [ -n "$TAP_VALUE" ]; then
         if ! brew_tap "$TAP_VALUE"; then
@@ -52,14 +50,31 @@ brew_install() {
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    # Install the specified formula
+    # Install the specified formula.
 
-    if brew "$CMD" list "$FORMULA" &> /dev/null; then
+    # shellcheck disable=SC2086
+    if brew $CMD list "$FORMULA" &> /dev/null; then
         print_success "$FORMULA_READABLE_NAME"
     else
         execute \
-            "brew $CMD install $FORMULA" \
+            "brew $CMD install $FORMULA $CMD_ARGUMENTS" \
             "$FORMULA_READABLE_NAME"
+    fi
+
+}
+
+brew_prefix() {
+
+    local path=""
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    if path="$(brew --prefix 2> /dev/null)"; then
+        printf "%s" "$path"
+        return 0
+    else
+        print_error "Homebrew (get prefix)"
+        return 1
     fi
 
 }
@@ -72,14 +87,14 @@ brew_update() {
 
     execute \
         "brew update" \
-        "brew (update)"
+        "Homebrew (update)"
 
 }
 
 brew_upgrade() {
 
     execute \
-        "brew upgrade --all" \
-        "brew (upgrade)"
+        "brew upgrade" \
+        "Homebrew (upgrade)"
 
 }

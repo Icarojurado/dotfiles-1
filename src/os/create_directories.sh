@@ -5,20 +5,23 @@ cd "$(dirname "${BASH_SOURCE[0]}")" \
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-main() {
+create_directories() {
 
     declare -a DIRECTORIES=(
         "$HOME/Downloads/torrents"
     )
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    print_info "Create directories"
-
     for i in "${DIRECTORIES[@]}"; do
         mkd "$i"
     done
 
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+main() {
+    print_in_purple "\n • Create directories\n\n"
+    create_directories
 }
 
 main
