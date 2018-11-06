@@ -26,6 +26,17 @@ alias y="yarn"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+alias gs="git status"
+alias gps="git push"
+alias gpb="!git push -u origin $(git branch-name)"
+alias gpl="git pull"
+alias gco="git checkout"
+alias gcm="git commit -m"
+alias gcm="git commit -am"
+alias gd="g d"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 # Load OS specific aliases.
 
 . "aliases/$OS/bash_aliases"
